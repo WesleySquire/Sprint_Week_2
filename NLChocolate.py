@@ -41,10 +41,9 @@
 import Backpack as BP
 from datetime import date
 
-
+#Travel Claim Function - Wesley Squire, March 13, 2021
 def EmpTravClaim(): 
-    
-    f = open('TCDef.dat', 'r')
+    f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'r')
     ClaimNum = int(f.readline())
     HSTRate = float(f.readline())
     LowPerDiemRate = float(f.readline())
@@ -52,10 +51,9 @@ def EmpTravClaim():
     MileageRate = float(f.readline())
     RentalRate = float(f.readline())
     f.close()
-    
+
     while True:
         
-    
         #Inputs for emp info and claims
         EmpNum = str(input(" Enter Employee Number : "))
         EmpName = input(" Enter Employee Name: ")
@@ -86,6 +84,7 @@ def EmpTravClaim():
         elif (Car == "R") or (Car == "r"):
             PaymentKm = NumDays * RentalRate
             RentedOwned = "Rented"
+            KmTrav = "N/A"
         if (NumDays <= 3):
             DailyRate = NumDays * LowPerDiemRate
         elif (NumDays >= 4):
@@ -95,7 +94,7 @@ def EmpTravClaim():
         ###############################################
         
         #Calcs for SubClaim, Tax, and ClaimTotal
-        SubClaim = DailyRate + KmTrav
+        SubClaim = DailyRate + PaymentKm
         HST = SubClaim * HSTRate
         ClaimTotal = SubClaim + HST
         print()
@@ -105,13 +104,17 @@ def EmpTravClaim():
         ###############################################
         
         #This write downs the data claims in the Claims.dat folder
-        f = open("Claims.dat", "a")
+        f = open("/home/ec2-user/environment/Sprint_Week_2/Claims.dat", "a")
         f.write("{}, ".format(str(ClaimNum)))
         f.write("{}, ".format(EmpName))
-        f.write("{}, ".format(str(SubClaim)))
-        f.write("{}, ".format(str(HST)))
-        f.write("{}, ".format(str(ClaimTotal)))
+        f.write("${}, ".format(str(SubClaim)))
+        f.write("${}, ".format(str(HST)))
+        f.write("${}, ".format(str(ClaimTotal)))
         f.write("{}, ".format(Location))
+        f.write("{}, ".format(RentedOwned))
+        f.write("{}, ".format(str(KmTrav)))
+        f.write("{}, ".format(str(NumDays)))
+        f.write('\n')
         f.close()
         
         ##############################################
@@ -125,7 +128,7 @@ def EmpTravClaim():
         print(" End Date: {}         Days On Trip: {}".format(Date2, DaysGone))
         print(" Car Was: {}         ".format(RentedOwned))
         print()
-        print(" Kilometers Travelled: {}          Per Diem: ${:,.2f}".format(KmTrav,SubClaim))
+        print(" Kilometers Travelled: {}        Per Diem: ${:,.2f}".format(KmTrav,SubClaim))
         print("                                         Hst: ${:,.2f}".format(HST))
         print("                                             ---------")
         print("                                 Claim Total: ${:,.2f}".format(ClaimTotal))
@@ -144,9 +147,13 @@ def EmpTravClaim():
             break
     
     #This re-writes and stores the claimnum and hstrate
-    f = open('Def.dat', 'w')
+    f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'w')
     f.write("{}\n".format(str(ClaimNum)))
     f.write("{}\n".format(str(HSTRate)))
+    f.write("{}\n".format(str(LowPerDiemRate)))
+    f.write("{}\n".format(str(HighPerDiemRate)))
+    f.write("{}\n".format(str(MileageRate)))
+    f.write("{}\n".format(str(RentalRate)))
     f.close()
 
 #def EditSystemValues():
@@ -155,10 +162,7 @@ def EmpTravClaim():
 #def TravelClaimReport():
     
 
-
-
-
-#Main Menu formatting and processing - Wesley Squire, March 13
+#Main Menu formatting and processing - Wesley Squire, March 13, 2021
 def main():
     while True:    
         
