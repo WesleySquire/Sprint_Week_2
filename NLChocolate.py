@@ -6,6 +6,7 @@
 #Add comment to these functions including a description, list of parameters, and a list of return values.
 
 ######################################
+#
 #MENU
 #INPUT
 #1-5 for what to do in menu -
@@ -30,7 +31,21 @@
 #OUTPUT
 #All inputs and calc values - basic printout w/ headings + values
 #Display that claim has been processed and info saved, update invoice num by 1
-
+#
+#######################################
+#
+#Edit System Values
+#Write this function to read the values from the defaults table, display a couple of headings at the beginning with, company name and subtitle (Edit System Default Values) 
+#Followed with a series of inputs to allow  the  user to enter new values,  if required, for each of thedefault values. 
+#Once completewrite the new updated values to the defaults file and display a message telling the user that the default values have been successfully updated
+#Display a message to “Press any key to continue ...” before returning to the menu.
+#INPUT
+#Inputs to allow user to enter new values, and press any key to continue at end
+#PROCESSING
+#Read values in TCDef.dat table, write new defaulted values to file
+#OUTPUT
+#Couple headings at beggining w/ company name and subtitle (Edit System Default Values)
+#Message saying default values have been successfully updtated
 
 
 """Wesley Squire + Bradon Walsh
@@ -40,6 +55,7 @@
 #Importing backpack and datetime
 import Backpack as BP
 from datetime import date
+from datetime import datetime
 
 #Travel Claim Function - Wesley Squire, March 13, 2021
 def EmpTravClaim(): 
@@ -107,13 +123,16 @@ def EmpTravClaim():
         f = open("/home/ec2-user/environment/Sprint_Week_2/Claims.dat", "a")
         f.write("{}, ".format(str(ClaimNum)))
         f.write("{}, ".format(EmpName))
-        f.write("${}, ".format(str(SubClaim)))
-        f.write("${}, ".format(str(HST)))
-        f.write("${}, ".format(str(ClaimTotal)))
+        f.write("{}, ".format(str(DailyRate)))
+        f.write("{}, ".format(str(PaymentKm)))
+        f.write("{}, ".format(str(SubClaim)))
+        f.write("{}, ".format(str(HST)))
+        f.write("{}, ".format(str(ClaimTotal)))
         f.write("{}, ".format(Location))
         f.write("{}, ".format(RentedOwned))
         f.write("{}, ".format(str(KmTrav)))
         f.write("{}, ".format(str(NumDays)))
+        f.write("{}, ".format(str(Date2)))
         f.write('\n')
         f.close()
         
@@ -156,16 +175,97 @@ def EmpTravClaim():
     f.write("{}\n".format(str(RentalRate)))
     f.close()
 
-#def EditSystemValues():
+#Function to edit system values in TCDef.dat - Wesley Squire, March 14, 2021
+def EditSystemValues():
+    print("              NL Chocolate Company")
+    print("           Edit System Default Values")
+    print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'r+')
+    ClaimNum = int(f.readline())
+    HSTRate = float(f.readline())
+    LowPerDiemRate = float(f.readline())
+    HighPerDiemRate = float(f.readline())
+    MileageRate = float(f.readline())
+    RentalRate = float(f.readline())
+    print("Claim  HST   LowPer  HighPer  Mileage   Rental")
+    print("Number Rate   Rate    Rate     Rate      Rate")
+    print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    print("{:<3}   {:<3}   {:<6}  {:<6}   {:<3}       {:<3}".format(ClaimNum, HSTRate, LowPerDiemRate, HighPerDiemRate, MileageRate, RentalRate))
+    f.close
     
+    f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'w+')
+    ClaimNum = input(" Please enter new claim number: ")
+    HSTRate = input(" Please enter new HST rate: ")
+    LowPerDiemRate = input(" Please enter new Low Per Diem rate: ")
+    HighPerDiemRate = input(" Please enter new High Per Diem rate: ")
+    MileageRate = input(" Please enter new Mileage rate: ")
+    RentalRate = input(" Please enter new Rental rate: ")
+    f.write("{}\n".format(str(ClaimNum)))
+    f.write("{}\n".format(str(HSTRate)))
+    f.write("{}\n".format(str(LowPerDiemRate)))
+    f.write("{}\n".format(str(HighPerDiemRate)))
+    f.write("{}\n".format(str(MileageRate)))
+    f.write("{}\n".format(str(RentalRate)))
+    f.close()
+        
+    print()
+    print("    Default Values Have Been Succefully Updated.")
+    AnyKey = input("Press any key to continue... ")
 
-#def TravelClaimReport():
+#Function for the travel claim report - Wesley Squire, March 15, 2021
+
+
+def TravelClaimReport():
+    ClaimCtr = 0
+    PerDiemTotal = 0
+    MileageTotal = 0
+    ClaimTotalAcc = 0
+    print("         1         2         3         4         5         6         7         8")
+    print("12345678901234567890123456789012345678901234567890123456789012345678901234567890")
+    print()
+    print(" " * 32 + "NL CHOCOLATE COMPANY")
+    print()
+    print(" " * 23 + "TRAVEL CLAIMS LISTING AS OF " + datetime.today().strftime('%m-%d-%Y'))
+    print()
+    print("CLAIM   CLAIM      SALESPERSON        CLAIM     PER DIEM    MILEAGE      CLAIM")
+    print("NUMBER  DATE          NAME           LOCATION    AMOUNT     AMOUNT       AMOUNT")
+    print("=" * 80)
+    f = open('/home/ec2-user/environment/Sprint_Week_2/Claims.dat', 'r')
+    for claims in f:
+        Claimlist = claims.split(",")
+        ClaimNum = Claimlist[0]
+        EmpName = Claimlist[1].strip()
+        PerDiem = float(Claimlist[2].strip())
+        MileageAmt = float(Claimlist[3].strip())
+        SubClaim = float(Claimlist[4].strip())
+        HST = float(Claimlist[5].strip())
+        ClaimTotal = float(Claimlist[6].strip())
+        ClaimLocation = str(Claimlist[7].strip())
+        RentedOwned = str(Claimlist[8].strip())
+        KMTrav = str(Claimlist[9].strip())
+        NumDays = int(Claimlist[10].strip())
+        ClaimDate = Claimlist[11]
+        
+        
+        print(" {} {} {:<20} {:<10} ${:,.2f}    ${:<6,.2f}    ${:,.2f}".format(ClaimNum, ClaimDate, EmpName, ClaimLocation, PerDiem, MileageAmt, ClaimTotal  ))
+        
+        ClaimCtr += 1
+        PerDiemTotal += PerDiem
+        MileageTotal += MileageAmt
+        ClaimTotalAcc += ClaimTotal
+    f.close()
+    print("=" * 80)
+    print("{:<2} claims listed                              ${:<8,.2f} ${:<8,.2f}      ${:<8,.2f}".format(ClaimCtr, PerDiemTotal, MileageTotal, ClaimTotal))
+    print()
+    print(" " * 32 + "END OF REPORT")
+    AnyKey = input("Press any key to continue... ")
     
-
+    
 #Main Menu formatting and processing - Wesley Squire, March 13, 2021
 def main():
     while True:    
         
+        print()
         print("NL Chocolate Company")
         print("Travel Claims Processing System")
         print()
@@ -190,13 +290,12 @@ def main():
         
         elif Choice == 2:
             print()
-            print("Edit The System Default Values...")
-            #EditSystemValues()
+            EditSystemValues()
         
         elif Choice == 3:
             print()
             print("Printing Travel Claim Report...")
-            #TravelClaimReport()
+            TravelClaimReport()
         
         
         elif Choice == 4:
