@@ -58,7 +58,7 @@ from datetime import date
 from datetime import datetime
 
 
-Claims = 0
+
 #Travel Claim Function - Wesley Squire, March 13, 2021
 def EmpTravClaim(): 
     f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'r')
@@ -160,8 +160,7 @@ def EmpTravClaim():
         
         #This Increases the claim num by 1 
         ClaimNum += 1
-        Claims += 1
-        
+       
         #Asks user if they want to process another claim
         Cont = input("Process another claim (Y/N): ")
         if Cont.upper() != "Y":
