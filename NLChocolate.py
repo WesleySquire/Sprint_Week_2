@@ -52,11 +52,13 @@
     Sprint Week 2, Python + Github
      March 12, 2021 - MMMM DD, YYYY"""
 
-#Importing backpack and datetime
+#Importing variables required for functions
 import Backpack as BP
 from datetime import date
 from datetime import datetime
 
+
+Claims = 0
 #Travel Claim Function - Wesley Squire, March 13, 2021
 def EmpTravClaim(): 
     f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'r')
@@ -66,24 +68,25 @@ def EmpTravClaim():
     HighPerDiemRate = float(f.readline())
     MileageRate = float(f.readline())
     RentalRate = float(f.readline())
+    
     f.close()
 
     while True:
         
         #Inputs for emp info and claims
-        EmpNum = str(input(" Enter Employee Number : "))
+        EmpNum = str(input(" Enter Employee Number: "))
         EmpName = input(" Enter Employee Name: ")
         Location = input(" Enter The Location Of The Trip: ")
         
-        staryear = int(input(" Enter Start Year Of Trip: "))
-        starmonth = int(input(" Enter Start Month Of Trip: "))
-        starday = int(input(" Enter Start Day Of Trip: "))
+        startyear = int(input(" Enter Start Year Of Trip: "))
+        startmonth = int(input(" Enter Start Month Of Trip: "))
+        startday = int(input(" Enter Start Day Of Trip: "))
     
         endyear = int(input(" Enter End Year Of Trip: "))
         endmonth = int(input(" Enter Ending Month Of Trip: "))
         endday = int(input(" Enter End Day Of Trip: "))
     
-        Date1 = date(staryear, starmonth, starday)
+        Date1 = date(startyear, startmonth, startday)
         Date2 = date(endyear, endmonth, endday)
         DaysGone = Date2 - Date1
         NumDays = DaysGone.days
@@ -113,9 +116,6 @@ def EmpTravClaim():
         SubClaim = DailyRate + PaymentKm
         HST = SubClaim * HSTRate
         ClaimTotal = SubClaim + HST
-        print()
-        print()
-        print()
         
         ###############################################
         
@@ -133,6 +133,7 @@ def EmpTravClaim():
         f.write("{}, ".format(str(KmTrav)))
         f.write("{}, ".format(str(NumDays)))
         f.write("{}, ".format(str(Date2)))
+        f.write("{}, ".format(str(startmonth)))
         f.write('\n')
         f.close()
         
@@ -147,7 +148,7 @@ def EmpTravClaim():
         print(" End Date: {}         Days On Trip: {}".format(Date2, DaysGone))
         print(" Car Was: {}         ".format(RentedOwned))
         print()
-        print(" Kilometers Travelled: {}        Per Diem: ${:,.2f}".format(KmTrav,SubClaim))
+        print(" Kilometers Travelled: {}          Per Diem: ${:,.2f}".format(KmTrav,SubClaim))
         print("                                         Hst: ${:,.2f}".format(HST))
         print("                                             ---------")
         print("                                 Claim Total: ${:,.2f}".format(ClaimTotal))
@@ -159,6 +160,7 @@ def EmpTravClaim():
         
         #This Increases the claim num by 1 
         ClaimNum += 1
+        Claims += 1
         
         #Asks user if they want to process another claim
         Cont = input("Process another claim (Y/N): ")
@@ -213,8 +215,6 @@ def EditSystemValues():
     AnyKey = input("Press any key to continue... ")
 
 #Function for the travel claim report - Wesley Squire, March 15, 2021
-
-
 def TravelClaimReport():
     ClaimCtr = 0
     PerDiemTotal = 0
@@ -259,8 +259,85 @@ def TravelClaimReport():
     print()
     print(" " * 32 + "END OF REPORT")
     AnyKey = input("Press any key to continue... ")
-    
-    
+
+#Function for graphing monthly claim totals - Brandon Walsh, March 23, 2021
+def GraphMonClaimRep():
+     
+    #Processing graphs using Matplotlib 
+    import matplotlib.pyplot as plt 
+    import math 
+    x_axis = [] 
+    y_axis = [] 
+    for xvalue in range(1>12): 
+        yvalue = math.sqrt(0 * xvalue + 0) 
+        x_axis.append(xvalue) 
+        y_axis.append(yvalue) 
+    plt.title("Prices ") 
+    plt.plot(x_axis, y_axis, color='darkgreen', label="item 1") 
+    plt.xlabel("Time (years)") 
+    plt.ylabel("Price (dollars)") 
+    plt.grid(True) 
+    plt.legend() 
+    plt.show()
+    plt.savefig("Graphname.jpg")
+#Function for changing system values back too default - Wesley Squire, March 17, 2021
+#This function will restore the values in TCDef.dat to the default values
+#The parameters are pressing enter to restore default values or entering 'CANCEL' to cancel the program
+#The return values are setting the TCDef.dat values back to default of 143, .15, 85.00, 100.00, .10, 56.00
+def DefaultTheDefaults():
+    print(" Setting System Values Back To Default")
+    print(" Only Use When There Is A Fault In The Program Or Advised By A Supervisor")
+    while True:
+        try:
+            Choice = input(" Press Enter To Return System Values To Default or 'CANCEL' to return to MENU ")
+        except:
+            print("Invalid Input")
+        if Choice == "":
+            f = open('/home/ec2-user/environment/Sprint_Week_2/TCDef.dat', 'w+')
+            ClaimNum = 143
+            HSTRate = .15
+            LowPerDiemRate = 85.00
+            HighPerDiemRate = 100.00
+            MileageRate = .10
+            RentalRate = 56.00
+            f.write("{}\n".format(str(ClaimNum)))
+            f.write("{}\n".format(str(HSTRate)))
+            f.write("{}\n".format(str(LowPerDiemRate)))
+            f.write("{}\n".format(str(HighPerDiemRate)))
+            f.write("{}\n".format(str(MileageRate)))
+            f.write("{}\n".format(str(RentalRate)))
+            f.close()
+            print(" Values Have Been Restored To Default's as of '2021-03-17'")
+            AnyKey = input(" Press Any Key To Continue... ")
+            break
+        elif Choice.upper() == "CANCEL":
+            break
+
+#Function for guessing game - Wesley Squire, March 16, 2021
+#This is a guessing game where the user inputs a number and the program tell them if they guessed the right number
+#Used only for when the user on break and is looking to pass the time
+#The parameters are what the user guesses 1-100 and the return values are what the program produces
+#IE.) Guess was too low, guess was too high, and how many tries it took the user
+def GuessingGame():
+    print()
+    print("Play a little game.")
+    import random
+    Tries = 0
+    Number = random.randint(1, 100)
+    Guess = int(input("Enter an integer from 1 to 100: "))
+    while Number != "Guess":
+        print()
+        Tries += 1
+        if Guess < Number:
+            print("Your guess is low!")
+            Guess = int(input("Enter an integer from 1 to 100: "))
+        elif Guess > Number:
+            print("Your guess is high!")
+            Guess = int(input("Enter an integer from 1 to 100: "))
+        else:
+            print("You guessed the number, it took {} try(s)!".format(Tries))
+            break
+   
 #Main Menu formatting and processing - Wesley Squire, March 13, 2021
 def main():
     while True:    
@@ -270,10 +347,12 @@ def main():
         print("Travel Claims Processing System")
         print()
         print("1. Enter an Employee Travel Claim.")
-        print("2. Edit System Default Values.")
+        print("2. Edit System Values.")
         print("3. Print Travel Claim Report.")
         print("4. Graph Monthly Claim Totals.")
         print("5. Quit Program.")
+        print("6. Set System Values To Default")
+        print("7. Guessing Game.")
         print()
         
         while True:
@@ -301,7 +380,7 @@ def main():
         elif Choice == 4:
             print()
             print("Graphing Monthly Claim Report...")
-            #GraphMonClaimRep()
+            GraphMonClaimRep()
             
         
         elif Choice == 5:
@@ -309,11 +388,13 @@ def main():
             
         elif Choice == 6:
             print()
+            DefaultTheDefaults()
             
         elif Choice == 7:
             print()
-        
-        
+            print("-=Only Play While On Break=-")
+            GuessingGame()
+            
         else:
             exit(0)
     
